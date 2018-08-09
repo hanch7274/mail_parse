@@ -14,7 +14,6 @@ import csv
 import hashlib
 import pymysql
 
-
 today = str(datetime.datetime.today().date())# YYYY-MM-DD
 #today = '2018-08-05'
 #day_from = '05-Aug-2018'
