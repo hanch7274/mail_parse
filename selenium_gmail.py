@@ -12,8 +12,7 @@ import hashlib
 import pymysql
 import collections
 
-#ex)8월 4일
-def get_kor_today():
+def get_kor_today(): #ex) 8월 1일, 8월 10일, 10월 3일~
     today = datetime.datetime.now().strftime('%m-%e').replace('-','월 ')+'일'
     if(int(today[:2])<10):
        today=today[1:]
@@ -101,15 +100,13 @@ VALUES(%s,%s,%s,%s,%s,%s,%s,%s)'''
 
 #더러운 변수들 저장용
 mail_url = ('https://gmail.com')
-inbox_url = ('https://mail.google.com/mail/u/0/h/1pq68r75kzvdr/?v%3Dlui')
-xpath_sender = '/html/body/table[2]/tbody/tr/td[2]/table[1]/tbody/tr/td[2]/form/table[2]/tbody/tr[{}]/td[2]'
-xpath_date = '/html/body/table[2]/tbody/tr/td[2]/table[1]/tbody/tr/td[2]/form/table[2]/tbody/tr[{}]/td[4]'
-xpath_body = '/html/body/table[2]/tbody/tr/td[2]/table[1]/tbody/tr/td[2]/form/table[2]/tbody/tr[{}]/td[3]/a/span/font[2]'
+inbox_url = ('https://mail.google.com/mail/u/0/h/1pq68r75kzvdr/?v%3Dlui') #Javascript버전 Gmail은 xPath값이 랜덤값이어서 HTML버전으로 파싱
+xpath_sender = '/html/body/table[2]/tbody/tr/td[2]/table[1]/tbody/tr/td[2]/form/table[2]/tbody/tr[{}]/td[2]' #i번째 행 2번째 열(보낸이)
+xpath_date = '/html/body/table[2]/tbody/tr/td[2]/table[1]/tbody/tr/td[2]/form/table[2]/tbody/tr[{}]/td[4]' #i번째 행 4번째 열(보낸 날짜)
+xpath_body = '/html/body/table[2]/tbody/tr/td[2]/table[1]/tbody/tr/td[2]/form/table[2]/tbody/tr[{}]/td[3]/a/span/font[2]' #i번째 행 3번째 열(본문)
 p = re.compile('https://bit.ly/\w{7}|http://bitly.kr/\w{4}|https://hoy.kr/\w{4}')
 
 link_dict = collections.OrderedDict()#딕셔너리 순회를 위해 OrderedDict 객체 생성
-link_list = list()
-date_list = list()
 image_dir = 'C:\\Users\\hanch\\Desktop\\image_dir\\'
 file_name =""
 #today = str(datetime.datetime.today().date())
@@ -128,6 +125,7 @@ driver.find_element_by_xpath('//*[@id="passwordNext"]/content').click()
 sleep(2)
 driver.get(inbox_url)
 sleep(2)
+
 # 야매로 메일 갯수 구하기 (하루에 온 메일 50개 넘어가면 오류)
 mail_count=0
 try:
@@ -135,37 +133,25 @@ try:
         if driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/td[2]/table[1]/tbody/tr/td[2]/form/table[2]/tbody/tr[{}]'.format(i)).text:
             mail_count+=1
 except:
-    quit
-#메일 송신자, 보낸날짜 비교하여 본문 파싱
+    quit #인덱싱오류 발생시 종료
+	
+#메일 송신자, 오늘날짜 비교하여 본문 파싱
 try:
     for i in range(mail_count-1,0,-1):
         if driver.find_element_by_xpath(xpath_sender.format(i)).text == 'Kyle Choi':
-            if driver.find_element_by_xpath(xpath_date.format(i)).text == '8월 4일':
+            if driver.find_element_by_xpath(xpath_date.format(i)).text == get_kor_today():
                 mail_body = driver.find_element_by_xpath(xpath_body.format(i)).text
                 parse_mail_body = p.findall(mail_body)
                 link = ''.join(parse_mail_body)
-                link_list.append(link)
                 driver.find_element_by_xpath(xpath_body.format(i)).click()
                 date = driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/td[2]/table[1]/tbody/tr/td[2]/table[4]/tbody/tr/td/table[1]/tbody/tr[1]/td[2]').text
-                date_list.append(date)
+                #메일 본문으로 들어가서 날짜 파싱.
                 link_dict[link] = date #link는 고유하지만 date는 여러개이기 때문에
                 driver.back()
 except:
     pass
-'''
-for link in link_list:
-    res = requests.get(link)
-    ori_url = urllib.parse.unquote(res.url)
-    image_url = unicodedata.normalize('NFC',ori_url)
-    print('image_url = '+ image_url)
-    down_image(image_url,res.content)
-    gps = get_gps(image_dir+today+'\\'+file_name)
-    image_MD5 = hashlib.md5(res.content).hexdigest()
-    image_SHA1 = hashlib.sha1(res.content).hexdigest()
-    write_csv(today,link,ori_url,file_name,gps,image_MD5,image_SHA1) #날짜값에 시간정보 포함x
-    draw_gmap(image_dir+today+'\\'+'result.csv')
-    input_db(today,link,ori_url,file_name,gps,image_MD5,image_SHA1)
-'''
+	
+#딕셔너리 순회
 for link, date in link_dict.items():
     res = requests.get(link)
     ori_url = urllib.parse.unquote(res.url)
