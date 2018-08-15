@@ -113,7 +113,7 @@ file_name =""
 today = '2018-08-04'
 csv_line = 0
 
-#지메일 로그인
+#지메일 
 driver = webdriver.Chrome("C:\\Users\\hanch\\Desktop\\chromedriver")
 driver.get(mail_url)
 driver.switch_to_default_content()
@@ -133,7 +133,7 @@ try:
         if driver.find_element_by_xpath('/html/body/table[2]/tbody/tr/td[2]/table[1]/tbody/tr/td[2]/form/table[2]/tbody/tr[{}]'.format(i)).text:
             mail_count+=1
 except:
-    quit #인덱싱오류 발생시 종료
+    pass #인덱싱오류 발생시 종료
 	
 #메일 송신자, 오늘날짜 비교하여 본문 파싱
 try:
