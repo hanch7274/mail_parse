@@ -6,7 +6,6 @@ import re
 import requests
 import urllib
 import unicodedata
-from PIL import Image
 import csv
 import hashlib
 import pymysql
@@ -109,15 +108,15 @@ p = re.compile('https://bit.ly/\w{7}|http://bitly.kr/\w{4}|https://hoy.kr/\w{4}'
 link_dict = collections.OrderedDict()#딕셔너리 순회를 위해 OrderedDict 객체 생성
 image_dir = 'C:\\Users\\hanch\\Desktop\\image_dir\\'
 file_name =""
-#today = str(datetime.datetime.today().date())
-today = '2018-08-04'
+today = str(datetime.datetime.today().date())
+#today = '2018-08-04'
 csv_line = 0
 
 #지메일 
 driver = webdriver.Chrome("C:\\Users\\hanch\\Desktop\\chromedriver")
 driver.get(mail_url)
 driver.switch_to_default_content()
-driver.find_element_by_xpath('//*[@id="identifierId"]').send_keys(sys.argv[1])
+driver.find_element_by_xpath('//*[@id="identifierId"]').send_keys(sys.argv]1])
 driver.find_element_by_xpath('//*[@id="identifierNext"]').click()
 sleep(2)
 driver.find_element_by_xpath('//*[@id="password"]/div[1]/div/div[1]/input').send_keys(sys.argv[2])

@@ -13,9 +13,9 @@ import hashlib
 import pymysql
 
 today = str(datetime.datetime.today().date())# YYYY-MM-DD
-#today = '2018-08-05'
-#day_from = '05-Aug-2018'
-#day_to = '06-Aug-2018'
+#today = '2018-08-11'
+#day_from = '11-Aug-2018'
+#day_to = '12-Aug-2018'
 image_dir = 'C:\\Users\\hanch\\Desktop\\image_dir\\'
 file_name =""
 get_email = list()
@@ -92,7 +92,7 @@ def write_csv(date,short_url,ori_url,file_name,gps,image_MD5,image_SHA1):
         gps.append(None)
         gps.append(None)
     try:
-        #기존에 파일이 있을때(오후)
+        #기존에 파일이 있을때
         with open(image_dir+today+'\\'+'result.csv', mode='r', encoding='utf-8') as read_file:
             reader = csv.reader(read_file)
             for i in reader:
@@ -103,7 +103,7 @@ def write_csv(date,short_url,ori_url,file_name,gps,image_MD5,image_SHA1):
             writer.writerow([csv_line,date,short_url,ori_url,file_name,gps[0],gps[1],image_MD5,image_SHA1])
             csv_line+=1
     except FileNotFoundError:
-        #파일이 없을때(오전)
+        #파일이 없을때
         with open(image_dir+today+'\\'+'result.csv', mode='w', encoding='utf-8',newline='') as write_file:
             writer = csv.writer(write_file)
             writer.writerow(['Number','Date','Shortened URL','Full URL','FileName','Latitude','Longitude','MD5','SHA1'])                
