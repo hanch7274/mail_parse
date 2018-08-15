@@ -116,7 +116,7 @@ csv_line = 0
 driver = webdriver.Chrome("C:\\Users\\hanch\\Desktop\\chromedriver")
 driver.get(mail_url)
 driver.switch_to_default_content()
-driver.find_element_by_xpath('//*[@id="identifierId"]').send_keys(sys.argv]1])
+driver.find_element_by_xpath('//*[@id="identifierId"]').send_keys(sys.argv[1])
 driver.find_element_by_xpath('//*[@id="identifierNext"]').click()
 sleep(2)
 driver.find_element_by_xpath('//*[@id="password"]/div[1]/div/div[1]/input').send_keys(sys.argv[2])
